@@ -1,0 +1,279 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registration</title>
+  </head>
+  <body class="bg-gradient-to-br from-cyan-50 to-cyan-100 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden flex">
+        <!-- Left Side - Welcome Section -->
+        <div class="w-1/2 bg-gradient-to-br from-cyan-500 to-blue-600 p-12 flex flex-col justify-center text-white">
+          <h1 class="text-4xl font-bold mb-4">
+            <span class="block">Welcome</span>
+            <span class="block text-6xl font-extrabold mt-2">Let's Get Started</span>
+          </h1>
+          <p class="text-xl mt-6 mb-4 opacity-90">Create your account and join our healthcare community.</p>
+          <div class="mt-8 space-y-3">
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Secure Account Creation</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Quick Healthcare Access</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="w-1/2 p-12 flex flex-col justify-center">
+          <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Register Here</h2>
+          <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="relative">
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.role.id_for_label }}">Role</label>
+              {% if user_form.role.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ user_form.role.errors }}
+              </div>
+              {% endif %} 
+              {{ user_form.role }}
+              <svg
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 text-gray-700"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.email.id_for_label }}">Email</label>
+              {% if user_form.email.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ user_form.email.errors }}
+              </div>
+              {% endif %} 
+              {{ user_form.email }}
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.username.id_for_label }}">Username</label>
+              {% if user_form.username.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ user_form.username.errors }}
+              </div>
+              {% endif %} 
+              {{ user_form.username }}
+            </div>
+
+            <div class="flex space-x-4">
+              <div class="w-1/2">
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.first_name.id_for_label }}">Firstname</label>
+                {% if user_form.first_name.errors %}
+                <div class="text-red-500 text-sm font-bold mb-2">
+                  {{ user_form.first_name.errors }}
+                </div>
+                {% endif %} 
+                {{ user_form.first_name }}
+              </div>
+              <div class="w-1/2">
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.last_name.id_for_label }}">Lastname</label>
+                {% if user_form.last_name.errors %}
+                <div class="text-red-500 text-sm font-bold mb-2">
+                  {{ user_form.last_name.errors }}
+                </div>
+                {% endif %} 
+                {{ user_form.last_name }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.password1.id_for_label }}">Password</label>
+              {% if user_form.password1.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ user_form.password1.errors }}
+              </div>
+              {% endif %} 
+              {{ user_form.password1 }}
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ user_form.password2.id_for_label }}">Confirm Password</label>
+              {% if user_form.password2.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ user_form.password2.errors }}
+              </div>
+              {% endif %} 
+              {{ user_form.password2 }}
+            </div>
+
+            <button
+              class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
+              id="register"
+              type="submit"
+            >
+              Register
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+<!-- {% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      class="flex justify-between py-20 bg-gradient-to-t from-white to-[#a4c9d8]"
+    >
+      <div class="mx-auto w-1/2 mt-10 px-5">
+        <h1 class="">
+          <span class="text-6xl font-bold">Welcome</span><br /><span
+            class="text-9xl font-extrabold"
+            >Let's Get Started</span
+          >
+        </h1>
+        <br />
+        <h1 class="text-8xl mb-4 mt-10 font-extrabold">Register Here</h1>
+      </div>
+      <div class="mx-auto w-1/2">
+        <form
+          method="POST"
+          class="bg-black shadow-md m-10 text-center rounded-2xl px-8 pt-6 pb-8 mb-4"
+        >
+          {% csrf_token %}
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.email.id_for_label }}"
+              >Role</label
+            >
+            {% if user_form.role.errors %}
+            <div class="relative text-red-500 text-sm font-bold mb-2">
+              {{ user_form.role.errors }}
+            </div>
+            {% endif %} {{ user_form.role }}
+            <svg
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 text-gray-700"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.email.id_for_label }}"
+              >Email</label
+            >
+            {% if user_form.email.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.email.errors }}
+            </div>
+            {% endif %} {{ user_form.email }}
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.username.id_for_label }}"
+              >Username</label
+            >
+            {% if user_form.username.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.username.errors }}
+            </div>
+            {% endif %} {{ user_form.username }}
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.first_name.id_for_label }}"
+              >Firstname</label
+            >
+            {% if user_form.first_name.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.first_name.errors }}
+            </div>
+            {% endif %} {{ user_form.first_name }}
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.last_name.id_for_label }}"
+              >Lastname</label
+            >
+            {% if user_form.last_name.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.last_name.errors }}
+            </div>
+            {% endif %} {{ user_form.last_name }}
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.password1.id_for_label }}"
+              >Password</label
+            >
+            {% if user_form.password1.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.password1.errors }}
+            </div>
+            {% endif %} {{ user_form.password1 }}
+          </div>
+          <div class="mb-2">
+            <label
+              class="block text-white text-lg font-semibold mb-2"
+              for="{{ user_form.password2.id_for_label }}"
+              >Confirm Password</label
+            >
+            {% if user_form.password2.errors %}
+            <div class="text-red-500 text-sm font-bold mb-2">
+              {{ user_form.password2.errors }}
+            </div>
+            {% endif %} {{ user_form.password2 }}
+          </div>
+          <button
+            class="text-black bg-[#a4c9d8] rounded-2xl font-bold px-5 py-2 my-5"
+            id="register"
+            type="submit"
+          >
+            Register
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html> -->

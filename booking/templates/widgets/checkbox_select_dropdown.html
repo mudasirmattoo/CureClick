@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'booking/js/multi-select-specialities.js' %}"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="relative">
+        <select multiple="multiple" name="{{ widget.name }}" id="{{ widget.id }}" class="{{ widget.attrs.class }}">
+            {% for group, options in grouped_choices %}
+                {% if group %}
+                    <optgroup label="{{ group }}">
+                        {% for option in options %}
+                            <option value="{{ option.0 }}"{% if option.0 in widget.value %} selected="selected"{% endif %}>
+                                {{ option.1 }}
+                            </option>
+                        {% endfor %}
+                    </optgroup>
+                {% else %}
+                    {% for option in options %}
+                        <option value="{{ option.0 }}"{% if option.0 in widget.value %} selected="selected"{% endif %}>
+                            {{ option.1 }}
+                        </option>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('select[multiple]');
+    
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('change', function() {
+            const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+            console.log('Selected specialties:', selectedOptions);
+        });
+    });
+});
+</script>
+</html>
+

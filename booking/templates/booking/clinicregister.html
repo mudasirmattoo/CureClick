@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Registration Detail</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen flex items-center justify-center"
+  >
+    <div class="container mx-auto px-4">
+      <div
+        class="w-3/4 mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden flex"
+      >
+        <!-- Left Side - Welcome Section -->
+        <div
+          class="w-1/2 bg-gradient-to-br from-green-500 to-teal-600 p-12 flex flex-col justify-center text-white"
+        >
+          <h1 class="text-4xl font-bold mb-4">
+            <span class="block">Welcome</span>
+            <span class="block text-6xl font-extrabold mt-2"
+              >Join Our Network</span
+            >
+          </h1>
+          <p class="text-xl mt-6 mb-4 opacity-90">
+            Enhance your practice with a secure and accessible platform for
+            doctors.
+          </p>
+          <div class="mt-8 space-y-3">
+            <div class="flex items-center space-x-3 py-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Trusted by Healthcare Professionals & Clinics worldwide</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 7h18M3 12h18M3 17h18M9 21v-4m6 4v-4"
+              />
+            </svg>
+            <span>Efficient Clinic Workflow</span>
+          </div>
+    
+          <div class="flex items-center space-x-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>Comprehensive Appointment Scheduling</span>
+          </div>
+          <div class="flex items-center space-x-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 10l5 5m0 0l5-5m-5 5V6"
+              />
+            </svg>
+            <span>Digital Health Records Management</span>
+          </div>
+          <div class="flex items-center space-x-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h11M9 21V3m12 7h-3m-6 6h3m-3 3h3"
+              />
+            </svg>
+            <span>Integrated Billing and Payment System</span>
+          </div>
+          
+        </div>
+
+        
+
+        <!-- Right Side - Login Form -->
+        <div class="w-1/2 p-12 flex flex-col justify-center">
+          <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
+            Additional Details
+          </h2>
+          <form method="POST" class="space-y-6" id="clinicregistration-form">
+            {% csrf_token %}
+            <div>
+              <label
+                for="{{ clinic_form.name.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Name
+              </label>
+              {% if clinic_form.name.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.name.errors }}
+              </div>
+              {% endif %} {{ clinic_form.name }}
+            </div>
+
+            <div>
+              <label
+                for="{{ clinic_form.registration_number.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Registration Number
+              </label>
+              {% if clinic_form.registration_number.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.registration_number.errors }}
+              </div>
+              {% endif %} {{ clinic_form.registration_number }}
+            </div>
+
+            <div>
+              <label
+                for="{{ clinic_form.pincode.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Pincode
+              </label>
+              {% if clinic_form.pincode.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.pincode.errors }}
+              </div>
+              {% endif %} {{ clinic_form.pincode }}
+            </div>
+
+            <div>
+              <label
+                for="{{ clinic_form.contact_number.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Contact Number
+              </label>
+              {% if clinic_form.contact_number.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.contact_number.errors }}
+              </div>
+              {% endif %} {{ clinic_form.contact_number }}
+            </div>
+
+            <div>
+              <label
+                for="{{ clinic_form.address.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Address
+              </label>
+              {% if clinic_form.address.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.address.errors }}
+              </div>
+              {% endif %} {{ clinic_form.address }}
+            </div>
+
+            <div>
+              <label
+                for="{{ clinic_form.specialty_offered.id_for_label }}"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Specialties Offered
+              </label>
+              {% if clinic_form.specialty_offered.errors %}
+              <div class="text-red-500 text-sm font-bold mb-2">
+                {{ clinic_form.specialty_offered.errors }}
+              </div>
+              {% endif %} {{ clinic_form.specialty_offered }}
+            </div>
+
+            <div>
+              <button
+                id="clinicregistration-button"
+                type="submit"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+              >
+                Register
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#id_specialty_offered").select2({
+          placeholder: "Select Specialties offered",
+          allowClear: true,
+          templateResult: function (state) {
+            if (!state.id) {
+              return state.text;
+            }
+            var $state = $(
+              '<span><input type="checkbox" class="specialty-checkbox" /> ' +
+                state.text +
+                "</span>"
+            );
+            return $state;
+          },
+          templateSelection: function (state) {
+            return state.text;
+          },
+        });
+
+        $("#id_specialty_offered").on("select2:select", function (e) {
+          var selectedOption = e.params.data;
+        });
+
+        $("#id_specialty_offered").on("select2:unselect", function (e) {
+          var unselectedOption = e.params.data;
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-cyan-50 to-cyan-100 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden flex">
+            <!-- Left Side - Welcome Section -->
+            <div class="w-1/2 bg-gradient-to-br from-cyan-500 to-blue-600 p-12 flex flex-col justify-center text-white">
+                <h1 class="text-4xl font-bold mb-4">
+                    <span class="block">Welcome</span>
+                    <span class="block text-6xl font-extrabold mt-2">Let's Get Started</span>
+                </h1>
+                <p class="text-xl mt-6 mb-4 opacity-90">Access your healthcare appointments with ease and security.</p>
+                <div class="mt-8 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Secure Patient Portal</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Quick Appointment Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Login Form -->
+            <div class="w-1/2 p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Additional Details</h2>
+                <form
+                method="POST"
+                class="space-y-6"
+                id="clinicregistration-form"
+            >
+                {% csrf_token %}
+                
+                <div>
+                    <label 
+                        for="{{ patient_form.phone_number.id_for_label }}" 
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Phone Number
+                    </label>
+                    {% if patient_form.phone_number.errors %}
+                    <div class="text-red-500 text-sm font-bold mb-2">
+                        {{ patient_form.phone_number.errors }}
+                    </div>
+                    {% endif %}
+                    {{ patient_form.phone_number }}
+                </div>
+            
+                <div>
+                    <label 
+                        for="{{ patient_form.pincode.id_for_label }}" 
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Pincode
+                    </label>
+                    {% if patient_form.pincode.errors %}
+                    <div class="text-red-500 text-sm font-bold mb-2">
+                        {{ patient_form.pincode.errors }}
+                    </div>
+                    {% endif %}
+                    {{ patient_form.pincode }}
+                </div>
+
+                
+                <div>
+                    <label 
+                        for="{{ patient_form.date_of_birth.id_for_label }}" 
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Date Of Birth
+                    </label>
+                    {% if patient_form.date_of_birth.errors %}
+                    <div class="text-red-500 text-sm font-bold mb-2">
+                        {{ patient_form.date_of_birth.errors }}
+                    </div>
+                    {% endif %}
+                    {{ patient_form.date_of_birth }}
+                </div>
+                
+
+                <div>
+                    <label 
+                        for="{{ patient_form.medical_history.id_for_label }}" 
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Medical History
+                    </label>
+                    {% if patient_form.medical_history.errors %}
+                    <div class="text-red-500 text-sm font-bold mb-2">
+                        {{ patient_form.medical_history.errors }}
+                    </div>
+                    {% endif %}
+                    {{ patient_form.medical_history }}
+                </div>
+           
+        
+                <div>
+                <button
+                    id="clinicregistration-button"
+                    type="submit"
+                    class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
+                >
+                    Register
+                </button>
+            </form>
+            
+          
+            
+            </div>
+        </div>
+    </div>
+
+    <script>
+      document.getElementById('clinicregistration-form').addEventListener('submit', function (event) {
+
+      });
+  </script>
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden flex">
+            <!-- Left Side - Welcome Section -->
+            <div class="w-3/4 bg-gradient-to-br from-green-500 to-teal-600 p-12 flex flex-col justify-center text-white">
+                <h1 class="text-4xl font-bold mb-4">
+                    <span class="block">Ready to book</span>
+                    <span class="block text-6xl font-extrabold mt-2">Appointments</span>
+                </h1>
+                {% comment %} <p class="text-xl mt-6 mb-4 opacity-90">Access your healthcare appointments with ease and security.</p> {% endcomment %}
+                <div class="mt-8 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Secure Patient Portal</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Quick Appointment Management</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 10l5 5m0 0l5-5m-5 5V6" />
+                        </svg>
+                        <span>Easy Access to Medical Records</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3m12 7h-3m-6 6h3m-3 3h3" />
+                        </svg>
+                        <span>Streamlined Billing Process</span>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Right Side - Registration Form -->
+            <div class="w-1/2 p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Additional Details</h2>
+                <form method="POST" class="space-y-6" id="patientregistration-form">
+                    {% csrf_token %}
+                    
+                    <div>
+                        <label for="{{ patient_form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number
+                        </label>
+                        {% if patient_form.phone_number.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ patient_form.phone_number.errors }}
+                        </div>
+                        {% endif %}
+                        {{ patient_form.phone_number }}
+                    </div>
+
+                    <div>
+                        <label for="{{ patient_form.pincode.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Pincode
+                        </label>
+                        {% if patient_form.pincode.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ patient_form.pincode.errors }}
+                        </div>
+                        {% endif %}
+                        {{ patient_form.pincode }}
+                    </div>
+
+                    <div>
+                        <label for="{{ patient_form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Date Of Birth
+                        </label>
+                        {% if patient_form.date_of_birth.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ patient_form.date_of_birth.errors }}
+                        </div>
+                        {% endif %}
+                        {{ patient_form.date_of_birth }}
+                    </div>
+
+                    <div>
+                        <label for="{{ patient_form.medical_history.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Medical History
+                        </label>
+                        {% if patient_form.medical_history.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ patient_form.medical_history.errors }}
+                        </div>
+                        {% endif %}
+                        {{ patient_form.medical_history }}
+                    </div>
+
+                    <div>
+                        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('patientregistration-button').addEventListener('click', function () {
+            this.disabled = true;
+            this.innerText = "Registering...";
+        });
+        
+      document.getElementById('clinicregistration-form').addEventListener('submit', function (event) {
+        // Your form submission logic here
+      });
+    </script>
+</body>
+</html>
+

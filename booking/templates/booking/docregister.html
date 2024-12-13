@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration Detail</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- <style>
+        body {
+            position: relative;
+            background: linear-gradient(to bottom right, #80e0d4, #c084fc); /* Existing gradient */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        /* Watermark Style */
+        body::before {
+            content: "CureClick";
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem; /* Adjust the size as needed */
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.1); /* Faint watermark color */
+            pointer-events: none; /* Ensures the watermark doesn't interfere with other elements */
+            z-index: -1; /* Puts the watermark behind the content */
+            white-space: nowrap;
+            user-select: none;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better visibility */
+        }
+    </style> -->
+    
+</head>
+
+<body class="bg-gradient-to-br from-teal-50 to-purple-100 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden flex">
+               <!-- Left Side - Welcome Section -->
+        <div
+        class="w-1/2 bg-gradient-to-br from-green-500 to-teal-600 p-12 flex flex-col justify-center text-white"
+      >
+        <h1 class="text-4xl font-bold mb-4">
+          <span class="block">Welcome</span>
+          <span class="block text-6xl font-extrabold mt-2"
+            >Join Our Network</span
+          >
+        </h1>
+        <p class="text-xl mt-6 mb-4 opacity-90">
+          Enhance your practice with a secure and accessible platform for
+          doctors.
+        </p>
+        <div class="mt-8 space-y-3">
+          <div class="flex items-center space-x-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>Trusted by Healthcare Professionals & Clinics worldwide</span>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3 py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 7h18M3 12h18M3 17h18M9 21v-4m6 4v-4"
+            />
+          </svg>
+          <span>Efficient Clinic Workflow</span>
+        </div>
+  
+        <div class="flex items-center space-x-3 py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>Comprehensive Appointment Scheduling</span>
+        </div>
+        <div class="flex items-center space-x-3 py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 10l5 5m0 0l5-5m-5 5V6"
+            />
+          </svg>
+          <span>Digital Health Records Management</span>
+        </div>
+        <div class="flex items-center space-x-3 py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 10h11M9 21V3m12 7h-3m-6 6h3m-3 3h3"
+            />
+          </svg>
+          <span>Integrated Billing and Payment System</span>
+        </div>
+        
+      </div>
+
+            <!-- Right Side - Login Form -->
+            <div class="w-1/2 p-12 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Additional Details</h2>
+                <form
+                    method="POST"
+                    class="space-y-6"
+                    id="docregistration-form"
+                >
+                    {% csrf_token %}
+                    <div>
+                        <label 
+                            for="{{ doc_form.specialty.id_for_label }}" 
+                            class="block text-sm font-medium text-gray-700 mb-2"
+                        >
+                            Specialty
+                        </label>
+                        {% if doc_form.specialty.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ doc_form.specialty.errors }}
+                        </div>
+                        {% endif %}
+                        {{ doc_form.specialty }}
+                    </div>
+
+                    <div>
+                        <label 
+                            for="{{ doc_form.license_number.id_for_label }}" 
+                            class="block text-sm font-medium text-gray-700 mb-2"
+                        >
+                            License Number
+                        </label>
+                        {% if doc_form.license_number.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ doc_form.license_number.errors }}
+                        </div>
+                        {% endif %}
+                        {{ doc_form.license_number }}
+                    </div>
+
+                    <div>
+                        <label 
+                            for="{{ doc_form.pincode.id_for_label }}" 
+                            class="block text-sm font-medium text-gray-700 mb-2"
+                        >
+                            Pincode
+                        </label>
+                        {% if doc_form.pincode.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ doc_form.pincode.errors }}
+                        </div>
+                        {% endif %}
+                        {{ doc_form.pincode }}
+                    </div>
+
+                    <div>
+                        <label for="{{ doc_form.clinics.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Clinics
+                        </label>
+                        {% if doc_form.clinics.errors %}
+                        <div class="text-red-500 text-sm font-bold mb-2">
+                            {{ doc_form.clinics.errors }}
+                        </div>
+                        {% endif %}
+                        {{ doc_form.clinics }}
+                    </div>
+
+                    <div>
+                        <button
+                            id="docregistration-button"
+                            type="submit"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+ 
+<script>
+    $(document).ready(function() {
+        $('#id_clinics').select2({
+            placeholder: "Select Clinics",
+            allowClear: true,
+            templateResult: function(state) {
+                if (!state.id) { return state.text; }
+                var $state = $(
+                    '<span><input type="checkbox" class="clinic-checkbox" /> ' + state.text + '</span>'
+                );
+                return $state;
+            },
+            templateSelection: function(state) {
+                return state.text;
+            }
+        });
+
+        // Handling checkbox selection and deselection
+        $('#id_clinics').on('select2:select', function(e) {
+            var selectedOption = e.params.data;
+        });
+
+        $('#id_clinics').on('select2:unselect', function(e) {
+            var unselectedOption = e.params.data;
+        });
+    });
+</script>
+    
+
+</body>
+</html>
