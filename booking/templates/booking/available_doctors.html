@@ -2,15 +2,13 @@
 {% load static %}
 {% block body %}
 
-<body class="bg-black">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Doctors Section -->
+<body class="bg-black min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 flex-grow">
         <section class="mb-12">
             <div class="bg-[#1e1f1e] rounded-lg p-6">
                 <form method="GET" class="space-y-6">
                     <!-- Search and Filter Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Search by Name -->
                         <div>
                             <label for="search" class="block text-sm font-medium text-white mb-2">Search by Name</label>
                             <input type="text" 
@@ -21,7 +19,6 @@
                                    class="w-full bg-gray-800 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                         </div>
 
-                        <!-- Filter by Specialization -->
                         <div>
                             <label for="specialty" class="block text-sm font-medium text-white mb-2">Specialization</label>
                             <select name="specialty" 
@@ -36,7 +33,6 @@
                             </select>
                         </div>
 
-                        <!-- Filter by Location -->
                         <div>
                             <label for="location" class="block text-sm font-medium text-white mb-2">Location (Pincode)</label>
                             <input type="text" 
@@ -48,13 +44,18 @@
                         </div>
                     </div>
 
-                    <!-- Filter Actions -->
                     <div class="flex justify-end space-x-4">
-                        <button type="reset" 
-                                onclick="window.location.href='{% url 'available_doctors' %}'"
-                                class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300">
-                            Clear Filters
-                        </button>
+                       <button type="reset" 
+        class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+        onclick="resetAndRedirect()">
+    Clear Filters
+</button>
+
+<script>
+function resetAndRedirect() {
+    window.location.href = "{% url 'available_doctors' %}";
+}
+</script>
                         <button type="submit" 
                                 class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300">
                             Apply Filters
@@ -63,6 +64,8 @@
                 </form>
             </div>
         </section>
+
+        <!-- Doctors Section -->
         <section class="mb-12">
             <h2 class="text-3xl font-bold text-white mb-6">Available Doctors</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -97,13 +100,13 @@
         </section>
 
         <!-- Clinics Section -->
-        <section>
+        <section class="mb-12">
             <h2 class="text-3xl font-bold text-white mb-6">Available Clinics</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for clinic in clinics %}
                 <div class="bg-[#1e1f1e] rounded-lg shadow-lg overflow-hidden">
-                    <div class="p-6 flex flex-col h-full">  <!-- Added flex and h-full -->
-                        <div class="flex-grow">  <!-- This div will take up all available space -->
+                    <div class="p-6 flex flex-col h-full">
+                        <div class="flex-grow">
                             <div class="mb-4">
                                 <h3 class="text-xl font-semibold text-white mb-2">{{ clinic.name }}</h3>
                                 <p class="text-gray-400">Reg. No: {{ clinic.registration_number }}</p>
@@ -138,28 +141,25 @@
     </div>
 
     {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when specialty changes
-    document.getElementById('specialty').addEventListener('change', function() {
-        this.form.submit();
-    });
-
-    // Debounce function for search input
-    let timeout = null;
-    document.getElementById('search').addEventListener('input', function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('specialty').addEventListener('change', function() {
             this.form.submit();
-        }, 500);
-    });
+        });
 
-    // Validate pincode input
-    document.getElementById('location').addEventListener('input', function() {
-        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        let timeout = null;
+        document.getElementById('search').addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                this.form.submit();
+            }, 500);
+        });
+
+        document.getElementById('location').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+        });
     });
-});
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
 </body>
 {% endblock %}

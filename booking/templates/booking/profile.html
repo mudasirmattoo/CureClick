@@ -1,0 +1,162 @@
+{% extends 'booking/header.html' %}
+{% load static %}
+
+{% block body %}
+<div class="min-h-screen bg-black py-8">
+    <div class="container mx-auto px-4">
+        <!-- Common Profile Header -->
+        <div class="bg-[#1e1f1e] rounded-3xl shadow-2xl overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-6 md:p-8">
+                <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
+                        <svg class="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h1 class="text-3xl font-bold text-white">{{ user.get_full_name }}</h1>
+                        <p class="text-xl text-white opacity-90">{{ user.role|title }}</p>
+                        <p class="text-white opacity-75">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.role == 'doctor' %}
+        <!-- Doctor Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Professional Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-gray-400">Specialization</label>
+                        <p class="text-white">{{ user.doctor.specialty }}</p>
+                    </div>
+                    <div>
+                        <label class="text-gray-400">License Number</label>
+                        <p class="text-white">{{ user.doctor.license_number }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Appointment Button -->
+            <div class="flex items-center justify-center">
+                <a href="{% url 'createbooking' id=user.doctor.id %}" 
+                   class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                    Create New Appointment
+                </a>
+            </div>
+        </div>
+
+        <!-- Created Appointments -->
+        <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">Created Appointments</h2>
+            <div class="space-y-4">
+                {% for appointment in created_appointments %}
+                <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition duration-300">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <p class="text-white font-semibold">Appointment #{{ user.doctor.id.appointment.id }}</p>
+                            <p class="text-gray-400 text-sm">Created: {{ appointment.created_at|date:"M d, Y" }}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm bg-green-500 text-white">Available</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-400">Date</p>
+                            <p class="text-white">{{ appointment.appointment_date|date:"M d, Y" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Time</p>
+                            <p class="text-white">{{ appointment.start_time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-400 text-center py-4">No appointments created</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Booked Appointments -->
+        <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-white mb-6">Booked Appointments</h2>
+            <div class="space-y-4">
+                {% for booking in booked_appointments %}
+                <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition duration-300">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <p class="text-white font-semibold">{{ booking.patient.user.get_full_name }}</p>
+                            <p class="text-gray-400 text-sm">Booked: {{ booking.created_at|date:"M d, Y" }}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm bg-yellow-500 text-white">
+                            {{ booking.status|title }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-400">Date</p>
+                            <p class="text-white">{{ booking.appointment_date|date:"M d, Y" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Time</p>
+                            <p class="text-white">{{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400">Contact</p>
+                            <p class="text-white">{{ booking.patient.user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-400 text-center py-4">No booked appointments</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% elif user.role == 'clinic' %}
+        <!-- Clinic Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Associated Doctors</h2>
+                <div class="space-y-4">
+                    {% for doctor in doctors %}
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <p class="text-white font-semibold">{{ doctor.user.get_full_name }}</p>
+                        <p class="text-gray-400">{{ doctor.specialty }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-400">No doctors associated with this clinic</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% elif user.role == 'patient' %}
+        <!-- Patient Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Your Appointments</h2>
+                <div class="space-y-4">
+                    {% for appointment in appointments %}
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <p class="text-white font-semibold">{{ appointment.doctor.user.get_full_name }}</p>
+                        <p class="text-gray-400">{{ appointment.appointment_date|date:"M d, Y" }} at {{ appointment.start_time|time:"H:i" }}</p>
+                        <span class="inline-block px-3 py-1 rounded-full text-sm 
+                            {% if appointment.status == 'completed' %}bg-green-500
+                            {% elif appointment.status == 'booked' %}bg-yellow-500
+                            {% else %}bg-red-500{% endif %} 
+                            text-white mt-2">
+                            {{ appointment.status|title }}
+                        </span>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-400">No appointments scheduled</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

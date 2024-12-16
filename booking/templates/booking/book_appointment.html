@@ -1,0 +1,78 @@
+{% extends "booking/header.html" %}
+
+{% block body %}
+<body class="bg-black">
+    <main class="py-8">
+      <section class="container mx-auto px-4">
+        <div class="flex justify-center items-center min-h-screen flex-wrap">
+          <div class="w-full sm:w-3/4 md:w-1/2 lg:max-w-2xl shadow-md rounded-lg p-6 sm:p-8 bg-[#1e1f1e]">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-white mb-6 sm:mb-8">
+              Book Appointment
+            </h2>
+            <form method="POST" class="space-y-4 sm:space-y-6" id="booking-form">
+              {% csrf_token %}
+              
+              <div>
+                <label for="{{ book_form.date.id_for_label }}" class="block text-sm font-medium text-white mb-2">
+                  Date
+                </label>
+                {% if book_form.date.errors %}
+                <div class="text-red-500 text-sm font-bold mb-2">
+                  {{ book_form.date.errors }}
+                </div>
+                {% endif %}
+                {{ book_form.date }}
+              </div>
+
+              <div>
+                <label for="{{ book_form.doctor.id_for_label }}" class="block text-sm font-medium text-white mb-2">
+                  Doctor
+                </label>
+                {% if book_form.doctor.errors %}
+                <div class="text-red-500 text-sm font-bold mb-2">
+                  {{ book_form.doctor.errors }}
+                </div>
+                {% endif %}
+                {{ book_form.doctor }}
+              </div>
+
+              <div>
+                <label for="{{ book_form.time_slot.id_for_label }}" class="block text-sm font-medium text-white mb-2">
+                  Time Slot
+                </label>
+                {% if book_form.time_slot.errors %}
+                <div class="text-red-500 text-sm font-bold mb-2">
+                  {{ book_form.time_slot.errors }}
+                </div>
+                {% endif %}
+                {{ book_form.time_slot }}
+              </div>
+
+              {% if messages %}
+              <div class="container mx-auto px-4">
+                {% for message in messages %}
+                <div class="{% if message.tags %}{{ message.tags }}{% endif %} text-white bg-green-500 p-4 rounded-lg mb-4 flex justify-between items-center">
+                  <span>{{ message }}</span>
+                  <button class="text-white hover:text-green-200" onclick="this.parentElement.style.display='none'">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <div>
+                <button type="submit" 
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                  Book Appointment
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+</body>
+{% endblock %}

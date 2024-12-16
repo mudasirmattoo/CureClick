@@ -1,0 +1,100 @@
+{% extends "booking/header.html" %}
+{% load static %}
+{% block body %}
+
+<body class="bg-black">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Doctor Profile Card -->
+            <div class="bg-[#1e1f1e] rounded-lg shadow-lg overflow-hidden">
+                <!-- Header Section -->
+                <div class="p-6 border-b border-gray-700">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <img src="{% static 'images/doctor-avatar.png' %}" 
+                             alt="Dr. {{ doctor.user.username }}" 
+                             class="w-32 h-32 rounded-full mb-4 md:mb-0 md:mr-6">
+                        <div class="text-center md:text-left">
+                            <h1 class="text-3xl font-bold text-white mb-2">
+                                Dr. {{ doctor.user.username }}
+                            </h1>
+                            <p class="text-xl text-green-500 mb-2">{{ doctor.specialty }}</p>
+                            <p class="text-gray-400">License No: {{ doctor.license_number }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="p-6">
+                    <!-- Working Hours & Location -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-white mb-3">Working Hours</h3>
+                            <p class="text-gray-300">
+                                {{ doctor.start_time|time:"H:i" }} - {{ doctor.end_time|time:"H:i" }}
+                            </p>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold text-white mb-3">Location</h3>
+                            <p class="text-gray-300">Area Code: {{ doctor.pincode }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Associated Clinics -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-white mb-4">Associated Clinics</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for clinic in doctor.clinics.all %}
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <h4 class="text-lg font-semibold text-white mb-2">{{ clinic.name }}</h4>
+                                <p class="text-gray-300 text-sm mb-2">{{ clinic.address }}</p>
+                                <p class="text-gray-300 text-sm">Contact: {{ clinic.contact_number }}</p>
+                            </div>
+                            {% empty %}
+                            <p class="text-gray-400 col-span-2">No clinics associated</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Available Time Slots -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-white mb-4">Available Time Slots</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {% for slot in available_slots %}
+                            <div class="bg-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-gray-300 text-sm">{{ slot.date|date:"M d, Y" }}</p>
+                                <p class="text-white">{{ slot.start_time|time:"H:i" }}</p>
+                            </div>
+                            {% empty %}
+                            <p class="text-gray-400 col-span-4">No available slots at the moment</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Booking Button -->
+                    <div class="flex justify-center">
+                        <a href="{% url 'book_appointment' doctor.id %}" 
+                           class="bg-green-500 text-white py-3 px-8 rounded-lg hover:bg-green-600 transition duration-300 inline-flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Book Appointment
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-6">
+                <a href="{% url 'available_doctors' %}" 
+                   class="inline-flex items-center text-green-500 hover:text-green-600 transition duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back to All Doctors
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

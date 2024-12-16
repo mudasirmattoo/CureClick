@@ -1,9 +1,10 @@
-import datetime
+from datetime import date, datetime, timedelta
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.utils import timezone
 
 PINCODE_VALIDATOR = RegexValidator(
     regex=r'^\d{6}$',
@@ -56,7 +57,9 @@ class Doctor(models.Model):
             current_time = next_time
     
         return slots
-  
+    def __str__(self):
+        return self.user.username
+
 class Patient(models.Model):    
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -69,38 +72,66 @@ class Patient(models.Model):
 class TimeSlot(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='time_slots')
     start_time = models.TimeField()
+    date = models.DateField(default=date.today)
     end_time = models.TimeField()
     is_booked = models.BooleanField(default=False)
     patient = models.ForeignKey('Patient', null=True, blank=True, on_delete=models.SET_NULL)
+    max_bookings = models.IntegerField(default=1) 
+    current_bookings = models.IntegerField(default=0) 
 
     def __str__(self):
-        return f"{self.start_time} - {self.end_time}"
+        return f"{self.date}: {self.start_time} - {self.end_time}"
 
+    def is_available(self):
+        return self.current_bookings < self.max_bookings
+
+    def book_slot(self, patient):
+        if not self.is_available():
+            return False
+        self.current_bookings += 1
+        if self.current_bookings >= self.max_bookings:
+            self.is_booked = True
+        self.save()
+        return True
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
+        ('available', 'Available'),
         ('booked', 'Booked'),
         ('completed', 'Completed'),
         ('canceled', 'Canceled'),
     ]
     
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)  
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
     appointment_date = models.DateTimeField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='booked')
-
+    start_time = models.TimeField(default='09:00')
+    end_time = models.TimeField(default='09:30')
+    slot_duration = models.IntegerField(
+        choices=[
+            (15, '15 minutes'),
+            (30, '30 minutes'),
+            (45, '45 minutes'),
+            (60, '1 hour'),
+        ],
+        default=30
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return f"Appointment with {self.doctor.user.username} on {self.appointment_date}"
-
+    
     def appointment_booking(self):
         if self.time_slot.is_booked:
-            raise ValueError("This time slot has benn already booked.")
+            raise ValueError("This time slot has been already booked.")
         
         self.time_slot.is_booked = True
         self.time_slot.patient = self.patient
         self.time_slot.save()
-        
         
         self.status = 'booked'
         self.save()
@@ -111,8 +142,6 @@ class Appointment(models.Model):
         self.time_slot.save()
         self.status = 'canceled'
         self.save()
-        
-        
 
 class MedicalRecord(models.Model):
     patient = models.OneToOneField(Patient, on_delete=models.CASCADE)

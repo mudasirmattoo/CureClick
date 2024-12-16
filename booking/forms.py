@@ -1,19 +1,22 @@
+from datetime import date, datetime, timedelta
 import re
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, Doctor, Clinic, Patient
+from .models import CustomUser, Doctor, Clinic, Patient, TimeSlot, Appointment
 from django.forms.widgets import Select
 from django.forms.widgets import SelectMultiple
 from django_select2.forms import Select2MultipleWidget
+from datetime import date
 
 ROLE_CHOICES = [
     ('patient', 'Patient'),
     ('doctor', 'Doctor'),
     ('clinic', 'Clinic'),
 ]
+
 SPECIALITY_CHOICES = [
     ('general_practitioner', 'General Practitioner'),
     ('cardiologist', 'Cardiologist'),
@@ -134,18 +137,18 @@ class ClinicCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         if hasattr(value, 'value'):
             value = value.value
-        
+
         try:
             clinic = Clinic.objects.get(pk=value)
             label = f"{clinic.name} - {clinic.address}"
         except Clinic.DoesNotExist:
             label = str(value)
-        
+
         option = super().create_option(name, value, label, selected, index, subindex, attrs)
-        
+
         option['attrs']['class'] = 'mr-2'
         return option
-    
+
 
 class DocRegistration(forms.ModelForm):
     specialty = forms.ChoiceField(
@@ -175,9 +178,9 @@ class DocRegistration(forms.ModelForm):
         required=False,
         widget=Select2MultipleWidget(attrs={
             'class': 'flex flex-col space-y-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
-            'placeholder':'Select Clinics' 
+            'placeholder': 'Select Clinics'
         }),
-        to_field_name='id'  
+        to_field_name='id'
     )
 
     class Meta:
@@ -203,7 +206,7 @@ class DocRegistration(forms.ModelForm):
 
 
 class MultiSelectWidget(SelectMultiple):
-   
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('attrs', {})
         kwargs['attrs'].update({
@@ -211,6 +214,7 @@ class MultiSelectWidget(SelectMultiple):
             'multiple': 'multiple'
         })
         super().__init__(*args, **kwargs)
+
 
 class ClinicRegistration(forms.ModelForm):
     name = forms.CharField(
@@ -261,20 +265,15 @@ class ClinicRegistration(forms.ModelForm):
 
     class Meta:
         model = Clinic
-        fields = ['name', 'registration_number', 'pincode', 'contact_number', 'address', 'specialty_offered']
+        fields = ['name', 'registration_number', 'pincode',
+                  'contact_number', 'address', 'specialty_offered']
 
     def is_registered(self, registration_number):
         registered_licenses = ['ABC12345', 'XYZ98765', 'LMN56789']
         return registration_number in registered_licenses
-    
+
+
 class PatientRegistration(forms.ModelForm):
-    pincode = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
-            'placeholder': 'Your Pincode'
-        }),
-        required=True
-    )
     phone_number = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
@@ -282,14 +281,14 @@ class PatientRegistration(forms.ModelForm):
         }),
         required=True
     )
-    
+
     date_of_birth = forms.DateField(
-    widget=forms.DateInput(attrs={
-        'type': 'date',  # Enables the browser's calendar widget
-        'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
-        'placeholder': 'Select your Date of Birth'
-    }),
-    required=True
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+            'placeholder': 'Select your Date of Birth'
+        }),
+        required=True
     )
 
     medical_history = forms.CharField(
@@ -301,9 +300,143 @@ class PatientRegistration(forms.ModelForm):
     )
 
     class Meta:
-        model = Patient  # Correct model
-        fields = ['pincode', 'phone_number', 'date_of_birth', 'medical_history']  # Relevant fields
+        model = Patient  #
+        fields = ['pincode', 'phone_number',
+                  'date_of_birth', 'medical_history']
 
     def is_registered(self, registration_number):
         registered_licenses = ['ABC12345', 'XYZ98765', 'LMN56789']
         return registration_number in registered_licenses
+
+class CreateBooking(forms.Form):
+    doctor = forms.ModelChoiceField(
+        queryset=Doctor.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        }),
+        required=True
+    )
+    date = forms.DateField(
+        initial=date.today,
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        }),
+        required=True
+    )
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        }),
+        required=True
+    )
+    end_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        }),
+        required=True
+    )
+    slot_duration = forms.ChoiceField(
+        choices=[
+            (15, '15 minutes'),
+            (30, '30 minutes'),
+            (45, '45 minutes'),
+            (60, '1 hour'),
+        ],
+        initial=30,
+        widget=forms.Select(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        }),
+        required=True
+    )
+    max_bookings = forms.IntegerField(
+        initial=1,
+        min_value=1,
+        widget=forms.NumberInput(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        })
+    )
+    def save(self, creator):
+        doctor = self.cleaned_data['doctor']
+        date = self.cleaned_data['date']
+        start_time = self.cleaned_data['start_time']
+        end_time = self.cleaned_data['end_time']
+        slot_duration = int(self.cleaned_data['slot_duration'])
+        max_bookings = self.cleaned_data['max_bookings']
+
+        start_datetime = datetime.combine(date, start_time)
+        end_datetime = datetime.combine(date, end_time)
+        current_time = start_datetime
+
+        created_appointments = []
+
+        while current_time + timedelta(minutes=slot_duration) <= end_datetime:
+            slot_end_time = current_time + timedelta(minutes=slot_duration)
+
+            time_slot = TimeSlot.objects.create(
+                doctor=doctor,
+                date=date,
+                start_time=current_time.time(),
+                end_time=slot_end_time.time(),
+                is_booked=False,
+                max_bookings=max_bookings,
+                current_bookings=0
+            )
+
+            appointment = Appointment.objects.create(
+                doctor=doctor,
+                patient=None,  # Set patient to None for available appointments
+                time_slot=time_slot,
+                appointment_date=datetime.combine(date, current_time.time()),
+                start_time=current_time.time(),
+                end_time=slot_end_time.time(),
+                slot_duration=slot_duration,
+                status='available',
+                is_active=True,
+                clinic=creator if isinstance(creator, Clinic) else None 
+            )
+
+            created_appointments.append(appointment)
+            current_time = slot_end_time
+
+            print(f"Created appointment: {appointment.id} for {appointment.appointment_date}")
+
+        return created_appointments
+
+class AppointmentBookingForm(forms.Form):
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        })
+    )
+    doctor = forms.ModelChoiceField(
+        queryset=Doctor.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        })
+    )
+    time_slot = forms.ModelChoiceField(
+        queryset=TimeSlot.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center',
+        })
+    )
+
+    def __init__(self, doctor=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if doctor:
+            self.fields['time_slot'].queryset = TimeSlot.objects.filter(
+                doctor=doctor,
+                is_booked=False,
+                date__gte=date.today()
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        time_slot = cleaned_data.get('time_slot')
+        if time_slot and not time_slot.is_available():
+            raise forms.ValidationError("This time slot is no longer available")
+        return cleaned_data

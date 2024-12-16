@@ -1,0 +1,97 @@
+{% extends "booking/header.html" %}
+{% load static %}
+{% block body %}
+
+<body class="bg-black">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Clinic Info Section -->
+        <section class="mb-12">
+            <div class="bg-[#1e1f1e] rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-3xl font-bold text-white mb-4">{{ clinic.name }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <p class="text-gray-300"><span class="font-medium">Registration Number:</span> {{ clinic.registration_number }}</p>
+                        <p class="text-gray-300"><span class="font-medium">Address:</span> {{ clinic.address }}</p>
+                        <p class="text-gray-300"><span class="font-medium">Contact:</span> {{ clinic.contact_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-300 font-medium mb-2">Specialties Offered:</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% for specialty in clinic.specialty_offered %}
+                            <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">
+                                {{ specialty }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doctors Section -->
+        <section>
+            <h3 class="text-2xl font-bold text-white mb-6">Doctors at {{ clinic.name }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for doctor in doctors %}
+                <div class="bg-[#1e1f1e] rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="{% static 'images/doctor-avatar.png' %}" alt="Doctor Avatar" 
+                                 class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h4 class="text-xl font-semibold text-white">Dr. {{ doctor.user.username }}</h4>
+                                <p class="text-gray-400">{{ doctor.specialty }}</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-gray-300"><span class="font-medium">License:</span> {{ doctor.license_number }}</p>
+                            <p class="text-gray-300"><span class="font-medium">Working Hours:</span> 
+                                {{ doctor.start_time|time:"H:i" }} - {{ doctor.end_time|time:"H:i" }}
+                            </p>
+                            <p class="text-gray-300"><span class="font-medium">Experience:</span> 
+                                {% if doctor.experience_years %}
+                                    {{ doctor.experience_years }} years
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="{% url 'book_appointment' doctor.id %}" 
+                               class="flex-1 bg-green-500 text-white text-center py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300">
+                                Book Appointment
+                            </a>
+                            <a href="{% url 'doctor_profile' doctor.id %}" 
+                               class="flex-1 bg-gray-600 text-white text-center py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300">
+                                View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-3">
+                    <div class="text-center py-8">
+                        <p class="text-gray-400 text-lg">No doctors are currently associated with this clinic.</p>
+                        <a href="{% url 'available_doctors' %}" 
+                           class="inline-block mt-4 bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition duration-300">
+                            View All Doctors
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Back Button -->
+        <div class="mt-8">
+            <a href="{% url 'available_doctors' %}" 
+               class="inline-flex items-center text-green-500 hover:text-green-600 transition duration-300">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to All Doctors
+            </a>
+        </div>
+    </div>
+</body>
+{% endblock %}

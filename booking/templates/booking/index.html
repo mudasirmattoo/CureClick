@@ -1,32 +1,364 @@
+{% extends "booking/header.html" %}
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5312aac142.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/5312aac142.js"
+      crossorigin="anonymous"
+    ></script>
 
-    <title>Document</title>
-</head>
-<body class="">
-    <nav>
-        <div>
-            <div class="">
-                <h1 class="text-center text-4xl font-extrabold py-2 top-0 sticky">CureClick</h1>
-                <div class="flex p-3 bg-cyan-100 w-3/5 mx-auto rounded-xl bg-opacity-70">
-                    <ul class="flex justify-between mx-auto space-x-32 font-semibold">
-                        <li><a href="">Services</a></li>
-                        <li><a href="">Contact</a></li>
-                        <li><a href=""><i class="fa-solid fa-file-waveform"></i></a></li>
-                        <li><a href="">Login</a></li>
-                        <li><a href="">Register</a></li>
+    <title>Appointment Booking Portal</title>
+    <style>
+      @keyframes moveBackground {
+        0% {
+          transform: scale(1) translateY(0);
+        }
+        50% {
+          transform: scale(1.05) translateY(-20px);
+        }
+        100% {
+          transform: scale(1) translateY(0);
+        }
+      }
 
-                    </ul>
+      .animated-bg-block {
+        background-image: url('/api/placeholder/1200/600');
+        background-size: cover;
+        background-position: center;
+        animation: moveBackground 10s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bg-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          to right, 
+          rgba(0,0,0,0.7), 
+          rgba(0,0,0,0.4)
+        );
+      }
+    </style>
+  </head>
+  <!-- [#1e1f1e] -->
+   {% block body %}
+  <body class="bg-black">
+
+    <section class="relative h-[600px] overflow-hidden mt-10">
+      <!-- Animated Background -->
+      <div class="absolute inset-0 bg-gradient-to-r from-[#1e1f1e] to-black">
+          <div class="absolute inset-0 opacity-20">
+              <!-- Add subtle animated patterns -->
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMi0yaDJ2MmgtMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] animate-pulse"></div>
+          </div>
+      </div>
+  
+      <!-- Content -->
+      <div class="relative z-10 container mx-auto px-4 h-full flex items-center">
+          <div class="max-w-3xl">
+              <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                  Healthcare at Your 
+                  <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400">
+                      Fingertips
+                  </span>
+              </h1>
+              
+              <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+                  Experience the future of healthcare with CureClick. Book appointments, connect with top healthcare professionals, and take control of your well-being—all in one place.
+              </p>
+  
+              <div class="flex flex-wrap gap-4">
+                  <a href="{% url 'available_doctors' %}" 
+                     class="inline-flex items-center px-8 py-3 text-lg font-semibold text-white bg-green-500 rounded-full hover:bg-green-600 transition duration-300 transform hover:scale-105">
+                      Find a Doctor
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                  </a>
+                  
+                  <a href="#services" 
+                     class="inline-flex items-center px-8 py-3 text-lg font-semibold text-white border-2 border-gray-400 rounded-full hover:border-gray-300 transition duration-300">
+                      Learn More
+                  </a>
+              </div>
+  
+              <!-- Feature Pills -->
+              <div class="mt-12 flex flex-wrap gap-4">
+                  <div class="flex items-center bg-[#2a2b2a] bg-opacity-50 rounded-full px-4 py-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-gray-300">Verified Doctors</span>
+                  </div>
+                  <div class="flex items-center bg-[#2a2b2a] bg-opacity-50 rounded-full px-4 py-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-gray-300">24/7 Support</span>
+                  </div>
+                  <div class="flex items-center bg-[#2a2b2a] bg-opacity-50 rounded-full px-4 py-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                      </svg>
+                      <span class="text-gray-300">Expert Specialists</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+    <main class="py-8">
+      <section class="container mx-auto px-4 mt-10" id="services">
+        <h2 class="text-3xl font-bold text-center mb-8 text-white text-bold ">
+          Welcome to CureClick
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Card 1: Book Appointment -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3
+                class="text-xl md:text-3xl font-bold mb-2 text-white text-center"
+              >
+                Book Appointment
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Schedule your appointment with top doctors and specialists at
+                your convenience. Choose your preferred time and date
+                hassle-free.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-regular fa-calendar text-green-500"></i>
+                  <span>Flexible scheduling options</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-bell text-green-500"></i>
+                  <span>Reminder notifications</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  >Book Now</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Our Doctors -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3
+                class="text-xl md:text-3xl font-bold mb-2 text-white text-center"
+              >
+                Our Top Doctors
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Meet our experienced team of medical professionals who
+                prioritize your health and well-being.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-lock text-green-500"></i>
+                  <span>Verified credentials</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-user-doctor text-green-500"></i>
+                  <span>Specialized experts</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  >View Profiles</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Specialties -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3
+                class="text-xl md:text-3xl font-bold mb-2 text-white text-center"
+              >
+                Specialties
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Explore the wide range of specialties we offer, from cardiology
+                to dermatology, and find the care you need.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-suitcase-medical text-green-500"></i>
+                  <span>Comprehensive treatments</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i
+                    class="fa-solid fa-house-medical-circle-check text-green-500"
+                  ></i>
+                  <span>Advanced medical technology</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  >Learn More</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Health Tips -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3
+                class="text-xl md:text-3xl font-bold mb-2 text-white text-center"
+              >
+                Health Tips
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Read our latest health tips and advice from experts to maintain
+                a healthy lifestyle.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-brands fa-nutritionix text-green-500"></i>
+                  <span>Nutrition guides</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-dumbbell text-green-500"></i>
+                  <span>Exercise routines</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  >Read Articles</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Patient Support -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3
+                class="text-xl md:text-3xl font-bold mb-2 text-white text-center"
+              >
+                Patient Support
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Get assistance and support for all your medical queries and
+                concerns, anytime.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-headset text-green-500"></i>
+                  <span>Dedicated support team</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fa-regular fa-clock text-green-500"></i>
+                  <span>Quick response time</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  >Contact Us</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Emergency Services -->
+          <div class="bg-[#1e1f1e] shadow-md rounded-lg overflow-hidden">
+            <div class="p-4">
+              <h3 class="text-xl md:text-3xl text-white font-bold mb-2">
+                Emergency Services
+              </h3>
+              <p class="text-gray-400 mb-4">
+                Learn more about our 24/7 emergency services and quick response
+                teams available round the clock.
+              </p>
+              <ul class="text-gray-500 mb-4">
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-hand-holding-medical text-green-500"></i>
+                  <span>Immediate medical attention</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <i class="fa-solid fa-house-medical text-green-500"></i>
+                  <span>State-of-the-art facilities</span>
+                </li>
+              </ul>
+              <div class="flex justify-center py-2">
+                <a
+                  href="#"
+                  class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600"
+                  >Find Help</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+{% endblock %}
+
+    <!-- footer -->
+    <hr class="border-gray-600">
+
+    <footer>
+        <div class="flex w-3/4 mx-auto justify-between">
+            <div class="p-4 w-1/2">
+                <h1 class="text-white font-semibold text-3xl py-2">Services Offered</h1>
+                <div class="text-gray-400 bg-[#1e1f1e] rounded-lg w-full p-4">
+                    <h1>Doctor Appointments</h1>
+                    <hr class="border-gray-400">
+                    <h1>Clinic Appointments</h1>
+                    <hr class="border-gray-400">
+                    <h1>Online Appointments</h1>
+                    <hr class="border-gray-400">
+                    <h1>Health Blogs</h1>
+                    <hr class="border-gray-400">
+                    <h1>Emergency Service</h1>
+                    <hr class="border-gray-400">
+                    <h1>Nutrition Guide</h1>
                 </div>
             </div>
+            
+            <div class="p-4 w-1/2">
+                <h1 class="text-white font-bold text-3xl py-2">Contact Us</h1>
+                <p class="text-gray-400">
+                    Email: contact@cureclick.com<br>
+                    Phone: +1 (123) 456-7890<br>
+                    Address: 123 Health Street, Wellness City
+                </p>
+            </div>
         </div>
-    </nav>
-</body>
+    </footer>
+    
+    <script>
+      const mobileMenuButton = document.getElementById("mobileMenuButton");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
+  </body>
 </html>
