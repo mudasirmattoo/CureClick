@@ -69,10 +69,25 @@ class Patient(models.Model):
     def __str__(self):
         return self.user.username
     
-class TimeSlot(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='time_slots')
+
+class TimeSlotGroup(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    date = models.DateField()
     start_time = models.TimeField()
-    date = models.DateField(default=date.today)
+    end_time = models.TimeField()
+    slot_duration = models.IntegerField()
+    max_bookings = models.IntegerField()
+    clinics = models.ManyToManyField(Clinic, blank=True)
+    
+    def get_slots(self):
+        return self.time_slots.all()
+    
+class TimeSlot(models.Model):
+    group = models.ForeignKey(TimeSlotGroup, on_delete=models.CASCADE, related_name='time_slots',null=True,blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_time_slots', null=True)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor_time_slots')
+    start_time = models.TimeField()
+    appointment_date = models.DateField(default=date.today)
     end_time = models.TimeField()
     is_booked = models.BooleanField(default=False)
     patient = models.ForeignKey('Patient', null=True, blank=True, on_delete=models.SET_NULL)
@@ -82,6 +97,8 @@ class TimeSlot(models.Model):
     def __str__(self):
         return f"{self.date}: {self.start_time} - {self.end_time}"
 
+    slots = []
+    
     def is_available(self):
         return self.current_bookings < self.max_bookings
 

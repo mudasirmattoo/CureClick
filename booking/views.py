@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegistrationForm, LoginForm, DocRegistration, ClinicRegistration, PatientRegistration, CreateBooking, AppointmentBookingForm
 from django.contrib.auth import authenticate, login, logout
-from .models import Doctor, Patient, Clinic, CustomUser, Appointment
+from .models import Doctor, Patient, Clinic, CustomUser, Appointment, TimeSlotGroup
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import date, datetime, timedelta
@@ -61,7 +61,7 @@ def user_login(request):
                 elif user.role == "clinic":
                     clinic, created = Clinic.objects.get_or_create(user=user)
                     if clinic.specialty_offered and clinic.registration_number and clinic.pincode and clinic.contact_number:
-                        return redirect('profile', id=clinic.id)
+                        return redirect('profile')
                     return redirect('clinicregister', id=clinic.id)
                 
                 elif user.role == "patient":
@@ -174,7 +174,6 @@ def createbooking(request, id):
         return redirect("user_login")
     
     if request.method == "POST":
-        print("Form submitted")  # Debug print
         creator_form = CreateBooking(request.POST)
         
         if creator_form.is_valid():
@@ -189,7 +188,7 @@ def createbooking(request, id):
             except Exception as e:
                 messages.error(request, f'Error creating appointments: {str(e)}')
         else:
-            print("Form errors:", creator_form.errors)  # Debug print
+            print("Form errors:", creator_form.errors)  
     else:
         initial_data = {'doctor': creator.id} if isinstance(creator, Doctor) else {}
         creator_form = CreateBooking(initial=initial_data)
@@ -223,7 +222,7 @@ def book_appointment(request, doctor_id):
                     status='booked'
                 )
                 messages.success(request, 'Appointment booked successfully!')
-                return redirect('appointment_success')
+                return redirect('profile')
             else:
                 messages.error(request, 'This slot is no longer available')
     else:
@@ -258,14 +257,20 @@ def doctor_profile(request, doctor_id):
 @login_required
 def profile(request):
     if request.user.role == 'doctor':
-        created_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='available',patient__isnull=True).order_by('appointment_date','start_time')
-        booked_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='booked',patient__isnull=False).order_by('appointment_date','start_time')
-        context = {'created_appointments':created_appointments, 'booked_appointments':booked_appointments,'user':request.user}
+        today = date.today()
+        slot_groups = TimeSlotGroup.objects.filter(doctor = request.user.doctor).order_by('start_time')
+        todays_slots = TimeSlotGroup.objects.filter(doctor = request.user.doctor,date=today).order_by('start_time')
+        # created_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='available',patient__isnull=True,appointment_date=today).order_by('appointment_date','start_time')
+        booked_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='booked',patient__isnull=False,appointment_date=today).order_by('-appointment_date','-start_time')
+        context = {'slot_groups':slot_groups, 'todays_slots':todays_slots, 'booked_appointments':booked_appointments,'user':request.user}
         return render(request, 'booking/profile.html', context)
     elif request.user.role == 'clinic':
         clinic = Clinic.objects.get(user=request.user)
         doctors = clinic.doctors.all()
-        context = {'clinic': clinic, 'doctors': doctors}
+        
+        slot_groups = TimeSlotGroup.objects.filter(clinics=clinic).order_by('start_time')
+        todays_slots = TimeSlotGroup.objects.filter(clinics=clinic,appointment_date=today).order_by('start_time')
+        context = {'clinic': clinic, 'doctors': doctors, 'slot_groups':slot_groups, 'todays_slots':todays_slots}
     
     elif request.user.role == 'patient':
         appointments = Appointment.objects.filter(patient=request.user.patient).order_by('appointment_date','start_time')
