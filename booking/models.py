@@ -45,18 +45,18 @@ class Doctor(models.Model):
     clinics = models.ManyToManyField(Clinic, blank=True, related_name='doctors')
 
     
-    def get_available_slots(self,interval_minutes=30):
-        slots = []
-        current_time = datetime.datetime.combine(datetime.today(),self.start_time)
-        end_time = datetime.datetime.combine(datetime.today(),self.end_time)
+    # def get_available_slots(self,interval_minutes=30):
+    #     slots = []
+    #     current_time = datetime.datetime.combine(datetime.today(),self.start_time)
+    #     end_time = datetime.datetime.combine(datetime.today(),self.end_time)
         
         
-        while current_time < end_time:
-            next_time = current_time + datetime.timedelta(minute=interval_minutes)
-            slots.append(f"{current_time.strftime('%H:%M')} - {next_time.strftime('%H:%M')}")
-            current_time = next_time
+    #     while current_time < end_time:
+    #         next_time = current_time + datetime.timedelta(minute=interval_minutes)
+    #         slots.append(f"{current_time.strftime('%H:%M')} - {next_time.strftime('%H:%M')}")
+    #         current_time = next_time
     
-        return slots
+    #     return slots
     def __str__(self):
         return self.user.username
 
@@ -139,6 +139,7 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, null=True, blank=True)
+    
     def __str__(self):
         return f"Appointment with {self.doctor.user.username} on {self.appointment_date}"
     

@@ -4,7 +4,6 @@
 {% block body %}
 <div class="min-h-screen bg-black py-8">
     <div class="container mx-auto px-4">
-        <!-- Profile Header -->
         <div class="bg-[#1e1f1e] rounded-3xl shadow-2xl overflow-hidden mb-8">
             <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-6 md:p-8">
                 <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -23,7 +22,6 @@
         </div>
 
         {% if user.role == 'doctor' %}
-            <!-- Doctor's Professional Info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
                     <h2 class="text-2xl font-bold text-white mb-6">Professional Information</h2>
@@ -47,7 +45,6 @@
                 </div>
             </div>
 
-           <!-- Today's Slots -->
     <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl mb-8">
         <h2 class="text-2xl font-bold text-white mb-6">Today's Slots</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -74,7 +71,6 @@
         </div>
     </div>
 
-    <!-- Created Slot Groups -->
     <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl mb-8">
         <h2 class="text-2xl font-bold text-white mb-6">Created Slot Groups</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -101,7 +97,6 @@
         </div>
     </div>
 
-    <!-- Booked Appointments -->
     <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
         <h2 class="text-2xl font-bold text-white mb-6">Booked Appointments</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -125,7 +120,6 @@
     </div>
 
         {% elif user.role == 'clinic' %}
-            <!-- Clinic's Dashboard -->
             <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl mb-8">
                 <h2 class="text-2xl font-bold text-white mb-6">Associated Doctors</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -144,7 +138,6 @@
                 </div>
             </div>
         
-            <!-- Clinic's Created Slot Groups -->
             <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
                 <h2 class="text-2xl font-bold text-white mb-6">Created Slot Groups</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -165,7 +158,6 @@
             </div>
         
         {% elif user.role == 'patient' %}
-            <!-- Patient's Dashboard -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-[#1e1f1e] rounded-3xl p-6 shadow-xl">
                     <h2 class="text-2xl font-bold text-white mb-6">Your Appointments</h2>
@@ -189,6 +181,7 @@
                 </div>
             </div>
         {% endif %}
+
         
         <script>
         function bookSlotForPatient(slotId) {
@@ -202,7 +195,7 @@
         }
         
         function createSlotsForDoctor(doctorId) {
-            window.location.href = `/create-booking/${doctorId}/`;
+            window.location.href = `/createbooking/${doctorId}/`;
         }
         </script>
         {% endblock %}

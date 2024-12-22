@@ -8,7 +8,6 @@ from django.contrib import messages
 from datetime import date, datetime, timedelta
 from django.db.models import Q
 
-
 #create your views here
 
 def index(request):
@@ -53,22 +52,19 @@ def user_login(request):
                 login(request, user)
                 
                 if user.role == "doctor":
-                    doctor, created = Doctor.objects.get_or_create(user=user)
+                    doctor = Doctor.objects.get(user=user)
                     if doctor.specialty and doctor.license_number and doctor.pincode:
                         return redirect('profile')
                     return redirect('docregister', id=doctor.id)
                 
                 elif user.role == "clinic":
-                    clinic, created = Clinic.objects.get_or_create(user=user)
+                    clinic = Clinic.objects.get(user=user)
                     if clinic.specialty_offered and clinic.registration_number and clinic.pincode and clinic.contact_number:
                         return redirect('profile')
                     return redirect('clinicregister', id=clinic.id)
                 
                 elif user.role == "patient":
-                    patient, created = Patient.objects.get_or_create(
-                        user=user, 
-                        defaults={'date_of_birth': None}
-                    )
+                    patient = Patient.objects.get(user=user)
                     if patient.date_of_birth and patient.pincode and patient.phone_number:
                         return redirect('available_doctors')
                     return redirect('patientregister', id=patient.id)
@@ -264,12 +260,13 @@ def profile(request):
         booked_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='booked',patient__isnull=False,appointment_date=today).order_by('-appointment_date','-start_time')
         context = {'slot_groups':slot_groups, 'todays_slots':todays_slots, 'booked_appointments':booked_appointments,'user':request.user}
         return render(request, 'booking/profile.html', context)
+    
     elif request.user.role == 'clinic':
+        today = date.today()
         clinic = Clinic.objects.get(user=request.user)
         doctors = clinic.doctors.all()
-        
         slot_groups = TimeSlotGroup.objects.filter(clinics=clinic).order_by('start_time')
-        todays_slots = TimeSlotGroup.objects.filter(clinics=clinic,appointment_date=today).order_by('start_time')
+        todays_slots = TimeSlotGroup.objects.filter(clinics=clinic,date=today).order_by('start_time')
         context = {'clinic': clinic, 'doctors': doctors, 'slot_groups':slot_groups, 'todays_slots':todays_slots}
     
     elif request.user.role == 'patient':
@@ -281,6 +278,7 @@ def profile(request):
 @login_required
 def edit_profile(request):
     return render(request, 'booking/edit_profile.html')
+
 
 
 @login_required
