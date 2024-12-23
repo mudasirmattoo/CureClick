@@ -203,20 +203,20 @@ def book_appointment(request, doctor_id):
         book_form = AppointmentBookingForm(doctor, request.POST)
         if book_form.is_valid():
             time_slot = book_form.cleaned_data['time_slot']
+            selected_date = book_form.cleaned_data['date']
             
             if time_slot.book_slot(patient):
                 appointment = Appointment.objects.create(
                     doctor=doctor,
                     patient=patient,
                     time_slot=time_slot,
-                    appointment_date=datetime.combine(
-                        time_slot.date,
-                        time_slot.start_time
-                    ),
+                    appointment_date=selected_date,
                     start_time=time_slot.start_time,
                     end_time=time_slot.end_time,
                     status='booked'
                 )
+                book_form.save_time_slot(time_slot)
+                book_form.save_appointment(appointment)
                 messages.success(request, 'Appointment booked successfully!')
                 return redirect('profile')
             else:

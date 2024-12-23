@@ -367,7 +367,7 @@ class CreateBooking(forms.Form):
         }),
         to_field_name='id'
     )
-    
+
     def save(self, creator):
         doctor = self.cleaned_data['doctor']
         date = self.cleaned_data['date']
@@ -379,9 +379,9 @@ class CreateBooking(forms.Form):
         start_datetime = datetime.combine(date, start_time)
         end_datetime = datetime.combine(date, end_time)
         current_time = start_datetime
-
+        
         created_slots = []
-
+        
         slot_group = TimeSlotGroup.objects.create(
             doctor=doctor,
             date=date,
@@ -389,48 +389,29 @@ class CreateBooking(forms.Form):
             end_time=end_datetime,
             slot_duration=slot_duration,
             max_bookings=max_bookings,
-            clinics=clinics,
-            created_by=creator
         )
+        slot_group.clinics.set(clinics)
         
-        created_slots = slot_group.get_slots()
         while current_time + timedelta(minutes=slot_duration) <= end_datetime:
             slot_end_time = current_time + timedelta(minutes=slot_duration)
-
             time_slot = TimeSlot.objects.create(
                 doctor=doctor,
-                date=date,
+                appointment_date=date,  
                 start_time=current_time.time(),
                 end_time=slot_end_time.time(),
                 is_booked=False,
                 max_bookings=max_bookings,
                 current_bookings=0,
-                clinics=clinics,
                 group=slot_group,
-                created_by=creator
-                
+                created_by=creator.user 
             )
             time_slot.clinics.set(clinics)
+            
             created_slots.append(time_slot)
-
-            # appointment = Appointment.objects.create(
-            #     doctor=doctor,
-            #     patient=None,  
-            #     time_slot=time_slot,
-            #     appointment_date=datetime.combine(date, current_time.time()),
-            #     start_time=current_time.time(),
-            #     end_time=slot_end_time.time(),
-            #     slot_duration=slot_duration,
-            #     status='available',
-            #     is_active=True,
-            #     clinic=creator if isinstance(creator, Clinic) else None 
-            # )
-
             current_time = slot_end_time
-
-            # print(f"Created appointment: {appointment.id} for {appointment.appointment_date}")
-
+        
         return slot_group, created_slots
+
 
 class AppointmentBookingForm(forms.Form):
     date = forms.DateField(

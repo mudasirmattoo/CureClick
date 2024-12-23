@@ -93,7 +93,8 @@ class TimeSlot(models.Model):
     patient = models.ForeignKey('Patient', null=True, blank=True, on_delete=models.SET_NULL)
     max_bookings = models.IntegerField(default=1) 
     current_bookings = models.IntegerField(default=0) 
-
+    clinics = models.ManyToManyField(Clinic, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     def __str__(self):
         return f"{self.date}: {self.start_time} - {self.end_time}"
 
