@@ -10,6 +10,7 @@ from django.forms.widgets import Select
 from django.forms.widgets import SelectMultiple
 from django_select2.forms import Select2MultipleWidget
 from datetime import date
+from django.utils import timezone
 
 ROLE_CHOICES = [
     ('patient', 'Patient'),
@@ -316,7 +317,8 @@ class CreateBooking(forms.Form):
         }),
         required=True
     )
-    date = forms.DateField(
+    
+    appointment_date = forms.DateField(
         initial=date.today,
         widget=forms.DateInput(attrs={
             'type': 'date',
@@ -370,25 +372,26 @@ class CreateBooking(forms.Form):
 
     def save(self, creator):
         doctor = self.cleaned_data['doctor']
-        date = self.cleaned_data['date']
+        appointment_date = self.cleaned_data['appointment_date']
         start_time = self.cleaned_data['start_time']
         end_time = self.cleaned_data['end_time']
         slot_duration = int(self.cleaned_data['slot_duration'])
         max_bookings = self.cleaned_data['max_bookings']
         clinics = self.cleaned_data['clinics']
-        start_datetime = datetime.combine(date, start_time)
-        end_datetime = datetime.combine(date, end_time)
+        start_datetime = datetime.combine(appointment_date, start_time)
+        end_datetime = datetime.combine(appointment_date, end_time)
         current_time = start_datetime
         
         created_slots = []
         
         slot_group = TimeSlotGroup.objects.create(
             doctor=doctor,
-            date=date,
+            appointment_date=appointment_date,
             start_time=start_datetime,
             end_time=end_datetime,
             slot_duration=slot_duration,
             max_bookings=max_bookings,
+            created_by=creator.user
         )
         slot_group.clinics.set(clinics)
         
@@ -396,7 +399,7 @@ class CreateBooking(forms.Form):
             slot_end_time = current_time + timedelta(minutes=slot_duration)
             time_slot = TimeSlot.objects.create(
                 doctor=doctor,
-                appointment_date=date,  
+                appointment_date=appointment_date,  
                 start_time=current_time.time(),
                 end_time=slot_end_time.time(),
                 is_booked=False,
@@ -409,8 +412,9 @@ class CreateBooking(forms.Form):
             
             created_slots.append(time_slot)
             current_time = slot_end_time
+        todays_slots = TimeSlotGroup.objects.filter(appointment_date = date.today,doctor=doctor,group=slot_group)
         
-        return slot_group, created_slots
+        return slot_group, created_slots, todays_slots
 
 
 class AppointmentBookingForm(forms.Form):

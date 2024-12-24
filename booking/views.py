@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegistrationForm, LoginForm, DocRegistration, ClinicRegistration, PatientRegistration, CreateBooking, AppointmentBookingForm
 from django.contrib.auth import authenticate, login, logout
-from .models import Doctor, Patient, Clinic, CustomUser, Appointment, TimeSlotGroup
+from .models import Doctor, Patient, Clinic, CustomUser, Appointment, TimeSlotGroup, TimeSlot
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import date, datetime, timedelta
@@ -255,7 +255,8 @@ def profile(request):
     if request.user.role == 'doctor':
         today = date.today()
         slot_groups = TimeSlotGroup.objects.filter(doctor = request.user.doctor).order_by('start_time')
-        todays_slots = TimeSlotGroup.objects.filter(doctor = request.user.doctor,date=today).order_by('start_time')
+        todays_slots = TimeSlotGroup.objects.filter(doctor = request.user.doctor,appointment_date=today).order_by('start_time')
+        
         # created_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='available',patient__isnull=True,appointment_date=today).order_by('appointment_date','start_time')
         booked_appointments = Appointment.objects.filter(doctor=request.user.doctor,status='booked',patient__isnull=False,appointment_date=today).order_by('-appointment_date','-start_time')
         context = {'slot_groups':slot_groups, 'todays_slots':todays_slots, 'booked_appointments':booked_appointments,'user':request.user}
@@ -266,7 +267,7 @@ def profile(request):
         clinic = Clinic.objects.get(user=request.user)
         doctors = clinic.doctors.all()
         slot_groups = TimeSlotGroup.objects.filter(clinics=clinic).order_by('start_time')
-        todays_slots = TimeSlotGroup.objects.filter(clinics=clinic,date=today).order_by('start_time')
+        todays_slots = TimeSlotGroup.objects.filter(clinics=clinic,appointment_date=today).order_by('start_time')
         context = {'clinic': clinic, 'doctors': doctors, 'slot_groups':slot_groups, 'todays_slots':todays_slots}
     
     elif request.user.role == 'patient':
@@ -324,3 +325,11 @@ def available_doctors(request):
     }
     
     return render(request, 'booking/available_doctors.html', context)
+
+
+@login_required
+def slot_group(request, group_id):
+    slot_group = get_object_or_404(TimeSlotGroup, id=group_id)
+    slots = TimeSlot.objects.filter(group=slot_group)
+    return render(request, 'booking/slot-group.html', {'slot_group': slot_group, 'slots': slots})
+

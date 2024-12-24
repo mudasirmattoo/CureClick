@@ -37,4 +37,5 @@ urlpatterns = [
     path('doctor/<int:doctor_id>/profile/', views.doctor_profile, name='doctor_profile'),
     path('profile/', views.profile, name='profile'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('slot-group/<int:group_id>/', views.slot_group, name='slot_group'),
 ]

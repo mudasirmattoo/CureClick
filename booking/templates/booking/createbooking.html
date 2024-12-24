@@ -44,16 +44,16 @@
               {% endif %}
               <div>
                 <label
-                  for="{{ creator_form.date.id_for_label }}"
+                  for="{{ creator_form.appointment_date.id_for_label }}"
                   class="block text-sm font-medium text-white mb-2"
                 >
                   Date
                 </label>
-                {% if creator_form.date.errors %}
+                {% if creator_form.appointment_date.errors %}
                 <div class="text-red-500 text-sm font-bold mb-2">
-                  {{ creator_form.date.errors }}
+                  {{ creator_form.appointment_date.errors }}
                 </div>
-                {% endif %} {{ creator_form.date }}
+                {% endif %} {{ creator_form.appointment_date }}
               </div>
 
               <div>
